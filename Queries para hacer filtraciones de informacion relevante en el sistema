@@ -1,0 +1,41 @@
+-- Querys simples para ver informacion
+
+SELECT * FROM Usuario;
+SELECT * FROM Roles;
+SELECT * FROM Fotos_MongoDB;
+SELECT * FROM Jardin;
+SELECT * FROM Plantas_Sistema;
+SELECT * FROM Cuidados_Plantas;
+SELECT * FROM Estado_Salud;
+SELECT * FROM Enfermedades_Plantas;
+
+-- Querys para simular la visualizacion de informacion importante en la aplicacion
+
+-- Mostrar toda la informacion del usuario
+SELECT Usuario.Usuario_ID, Roles.Role_ID, Usuario.Usuario, Usuario.Contrasena, Roles.Role_Nombre
+FROM Usuario
+JOIN Roles ON Usuario.Role_ID = Roles.Role_ID;
+
+-- Mostrar Informacion de MongoDB de la planta a la cual se relaciona la foto el ID de MongoDB_ID se relacionara en la estructura del codigo con
+-- la base de datos no relacional de MongoDB en donde el id sera la foto que se almaceno despues de que el usuario tomara las tres fotos en la aplicacion
+SELECT Fotos_MongoDB.Foto_ID, Fotos_MongoDB.MongoDB_ID, Usuario.Usuario
+FROM Fotos_MongoDB
+JOIN Usuario ON Fotos_MongoDB.Usuario_ID = Usuario.Usuario_ID;
+
+-- Mostrar la informacion de las plantas anadidas al jardin del usuario
+SELECT Jardin.ID, Usuario.Usuario, Plantas_Sistema.Nombre_Comun, Plantas_Sistema.Nombre_Cientifico, Plantas_Sistema.Descripcion, Estado_Salud.Estado_Salud
+FROM Jardin
+JOIN Usuario ON Jardin.Usuario_ID = Usuario.Usuario_ID
+JOIN Plantas_Sistema ON Jardin.Planta_ID = Plantas_Sistema.Planta_ID
+JOIN Estado_Salud ON Jardin.Estado_Salud_ID = Estado_Salud.Estado_Salud_ID;
+
+-- Mostrar los cuidados de cada planta
+SELECT Cuidados_Plantas.Cuidados_ID, Plantas_Sistema.Nombre_Comun, Plantas_Sistema.Nombre_Cientifico, Cuidados_Plantas.Exposicion_Sol, Cuidados_Plantas.Ciclos_Riego,
+Cuidados_Plantas.Fertilizacion
+FROM Cuidados_Plantas
+JOIN Cuidados_Plantas ON Cuidados_Plantas.Planta_ID = Plantas_Sistema.Planta_ID;
+
+-- Mostrar enfermedades y tratamiento de una planta
+SELECT Enfermedades_Plantas.Enfermedades_ID, Plantas_Sistema.Nombre_Comun, Plantas_Sistema.Nombre_Cientifico, Enfermedades_Plantas.Enfermedad_Nombre, 
+Enfermedades_Plantas.Enfermedad_Descripcion, Enfermedades_Plantas.Tratamiento
+FROM Enfermedades_Plantas
