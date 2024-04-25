@@ -1,0 +1,4 @@
+-- Codigo Utilizado para almacenar imagenes en base de datos NoSQL (MongoDB)
+
+_id: ObjectId('662ac3066297998a9e7cbcdd')
+Foto: ""
