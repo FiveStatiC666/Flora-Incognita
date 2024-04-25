@@ -1,0 +1,147 @@
+-- Crear Data Base
+
+CREATE DATABASE FORA_INCOGNITA;
+
+-- Utilizar la Base de Datos creada
+
+USE FLORA_INCOGNITA;
+
+-- Querys para crear las tablas que se van a utilizar en la base de datos
+
+-- Tabla para guardar los usuarios
+CREATE TABLE Usuario (
+Usuario_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+Usuario VARCHAR(255) NOT NULL,
+CONTRASENA VARCHAR(255) NOT NULL,
+Role_ID INT NOT NULL,
+FOREIGN KEY (Role_ID) REFERENCES Roles (Role_ID)
+);
+
+-- Tabla para guardar los diferentes roles
+CREATE TABLE Roles (
+Role_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+Role_Nombre VARCHAR(255)
+);
+
+-- Tabla que se utilizara para linkear las fotos que tome el usuario con la base de datos no relacional de MongoDB y pueda identificar las fotos de las plantas
+CREATE TABLE Fotos_MongoDB (
+Foto_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+MongoDB_ID VARCHAR(255) NOT NULL,
+Usuario_ID INT NOT NULL,
+FOREIGN KEY (Usuario_ID) REFERENCES Usuario(Usuario_ID)
+);
+
+-- Almacenara el jardin del usuario con las plantas que este mismo registro
+CREATE TABLE Jardin(
+ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+Usuario_ID INT NOT NULL,
+Planta_ID INT NOT NULL,
+Estado_Salud_ID INT NULL,
+FOREIGN KEY (Usuario_ID) REFERENCES Usuario(Usuario_ID),
+FOREIGN KEY (Planta_ID) REFERENCES Plantas_Sistema(Planta_ID),
+FOREIGN KEY (Estado_Salud_ID) REFERENCES Estado_Salud(Estado_Salud_ID)
+);
+
+-- Datos de todas las plantas actuales en el sistema
+CREATE TABLE Plantas_Sistema(
+Planta_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+Nombre_Comun VARCHAR(255) NOT NULL,
+Nombre_Cientifico VARCHAR(255) NULL,
+Descripcion VARCHAR(2000) NULL
+);
+
+-- Tabla para relacionar los cuidados de las plantas con las plantas registradas en el sistema, se relaciona con la tabla de las plantas del sistema
+CREATE TABLE Cuidados_Plantas (
+Cuidados_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+Planta_ID INT NOT NULL,
+Exposicion_Sol VARCHAR(255) NULL,
+Ciclos_Riego VARCHAR(255) NULL,
+Fertilizacion VARCHAR(255) NULL,
+FOREIGN KEY (Planta_ID) REFERENCES Plantas_Sistema(Planta_ID)
+);
+
+CREATE TABLE Estado_Salud (
+Estado_Salud_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+Estado_Salud VARCHAR(255)
+);
+
+-- Tabla de enfermedades de las plantas y su tratamiento, se relaciona con la tabla de las plantas del sistema
+CREATE TABLE Enfermedades_Plantas (
+Enfermedades_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+Planta_ID INT NOT NULL,
+Enfermedad_Nombre VARCHAR(255) NOT NULL,
+Enfermedad_Descripcion VARCHAR(2000) NOT NULL,
+Tratamiento VARCHAR(2000) NOT NULL,
+FOREIGN KEY (Planta_ID) REFERENCES Plantas_Sistema(Planta_ID)
+);
+
+-- Borrar Tablas Codigo solo se utilizo para hacer variaciones en los datos
+
+DROP TABLE Usuario;
+DROP TABLE Roles;
+DROP TABLE Fotos_MongoDB;
+DROP TABLE Jardin;
+DROP TABLE Plantas_Sistema;
+DROP TABLE Cuidados_Plantas;
+DROP TABLE Estado_Salud;
+DROP TABLE Enfermedades_Plantas;
+
+-- Queries para insertar informacion
+
+INSERT INTO Usuarios VALUES (1, 'Edgar', 'Edgar123', 1);
+INSERT INTO Usuarios VALUES (2, 'Melanie', 'Melanie123', 1);
+INSERT INTO Usuarios VALUES (3, 'Jardinero1', 'Jardinero1123', 2);
+INSERT INTO Usuarios VALUES (4, 'Supervisor', 'Supervisor123', 3);
+INSERT INTO Usuarios VALUES (5, 'Mantenimiento', 'Mantenimiento123', 4);
+
+INSERT INTO Roles VALUES (1, 'Admin');
+INSERT INTO Roles VALUES (2, 'Usuario');
+INSERT INTO Roles VALUES (3, 'Supervisor');
+INSERT INTO Roles VALUES (4, 'Mantenimiento');
+
+INSERT INTO Fotos_MongoDB VALUES (1, '662ac3066297998a9e7cbcdd', 3);
+INSERT INTO Fotos_MongoDB VALUES (2, '662ac3066297998a9e7cbcdd', 3);
+INSERT INTO Fotos_MongoDB VALUES (3, '662ac3066297998a9e7cbcdd', 3);
+INSERT INTO Fotos_MongoDB VALUES (4, '662ac3066297998a9e7cbcdd', 3);
+INSERT INTO Fotos_MongoDB VALUES (5, '662ac3066297998a9e7cbcdd', 3);
+INSERT INTO Fotos_MongoDB VALUES (6, '662ac3066297998a9e7cbcdd', 3);
+
+INSERT INTO Jardin VALUES (1, 3, 1, 5);
+INSERT INTO Jardin VALUES (2, 3, 2, 4);
+
+INSERT INTO Plantas_Sistema VALUES (1, 'Cola de Burro', 'Sedum Morganianum', 
+'Planta cuya presedencia y habitat son desconocidos pero se cree que es un hibrido natural del sedum morganianum que es oriundo de Mexico');
+INSERT INTO Plantas_Sistema VALUES (2, 'Dalia', 'Dahlia Pinnata', 
+'La dalia (Dahlia) es un género de plantas herbáceas y perennes con flores perteneciente a la familia Asteraceae. Está constituido por 35 especies endémicas de México, de las cuales solo cuatro géneros constituyen la base genética de los cultivos comerciales.');
+INSERT INTO Plantas_Sistema VALUES (3, 'Camadorea', 'Chamaedorea elegans', 
+'La Chamaedorea elegans, también conocida como camadorea, pacaya, tepejilote o palmera de salón, es una pequeña palmera que pertenece a la familia Arecaceae y es originaria de los bosques de México y Guatemala. Esta planta crece bajo las copas de los árboles y conforma su sotobosque. Actualmente, es muy popular como planta de interior debido al poder ornamental de sus hojas. Además, se ha ganado un papel indiscutible dentro del grupo de las plantas de interior más resistentes, por lo que es muy recomendable para principiantes');
+
+INSERT INTO Cuidados_Plantas VALUES (1, 1, 'Directa', 'Lunes, Jueves', 'Enero, Marzo, Mayo, Julio');
+INSERT INTO Cuidados_Plantas VALUES (2, 2, 'Resolana', 'Martes, Domingo', 'Enero, Noviembre, Diciembre');
+INSERT INTO Cuidados_Plantas VALUES (3, 3, 'Sombra', 'Domingo', 'Enero, Febrero, Marzo, Abril, Mayo');
+
+INSERT INTO Estado_Salud VALUES (1, 'Muy malo');
+INSERT INTO Estado_Salud VALUES (2, 'Malo');
+INSERT INTO Estado_Salud VALUES (3, 'Regular');
+INSERT INTO Estado_Salud VALUES (4, 'Bueno');
+INSERT INTO Estado_Salud VALUES (5, 'Muy bueno');
+
+INSERT INTO Enfermedades_Plantas VALUES (1, 1, 'Cochinilla y otras pestes', 
+'A diferencia de otras plagas, ésta no sólo se da en los meses de buen tiempo. La cochinilla puede tener un aspecto oscuro o blanco y al igual que el pulgón y la mosca blanca, succiona la savia de las plantas, dejando un rastro viscoso que crea un ambiente ideal par los hongos.', 
+'Aplicar sustrato, utilizar fertilizantes naturales como lo puede ser cascaras de huevo o de platano, regar la planta de manera regular dependiendo de la temperatura, regar mas la planta cuando haya mas sol o calor');
+INSERT INTO Enfermedades_Plantas VALUES (2, 1, 'Hojas amarillas', 
+'El color amarillo en las hojas de las plantas tiene un nombre: clorosis. Esto ocurre cuando a la hoja le falta clorofila, que es el nutriente que fabrica la planta para alimentarse y que es el responsable del color de la planta.',
+'Cuidar el exceso de riesgo o exposiciones prolongadas al sol');
+INSERT INTO Enfermedades_Plantas VALUES (3, 1, 'Pudricion',
+'La pudrición de las raíces es una de las enfermedades más dañinas que pueden sufrir las plantas de interior, y es una de las más comunes. Cuando la planta coge esta enfermedad lo que hace es convertir a las raíces en una suspensión marrón que no puede transportar los nutrientes al resto de la planta.',
+'Cuidar el exceso de riego');
+INSERT INTO Enfermedades_Plantas VALUES (4, 2, 'Mildiú polvoroso',
+'El mildiu polvoriento (cenicilla) es una de las enfermedades más importantes del lúpulo. Si no se la maneja adecuadamente, el mildiu polvoriento puede conducir a la pérdida completa de cultivos comerciables. El manejo de la enfermedad es difícil y, a menudo, incompleto en variedades susceptibles.',
+'Eliminar y desechar adecuadamente el follaje infectado');
+INSERT INTO Enfermedades_Plantas VALUES (5, 2, 'Tizón Botrytis',
+'La Botrytis se manifiesta, en primera instancia, con la aparición de tizones de inflorescencias y pudriciones del fruto, pero también como chanchos o pudriciones del tallo, ahogamiento de las plántulas, manchas foliares y como pudriciones del tubérculo, como bulbos y raíces.',
+'Tratar la parte aérea de las plantas con pulverizaciones a base de iprodiona, vinclozolina o procimidona en alternancia o mezcla con fungicidas de amplio espectro, especialmente con los que tienen una acción anti-Botrytis: tiram, diclofluanida o clorotalonil. Tratamientos preventivos durante la floración, o cuando las condiciones ambientales sean favorables para el desarrollo de la enfermedad.');
+INSERT INTO Enfermedades_Plantas VALUES (6, 3, 'Phytopthora',
+'La fitóftora o phytophthora es una enfermedad fúngica muy extendida y con un gran número de especies distintas que atacan a un gran número de especies agrícolas.',
+'Si ya tienes plantas o cultivos afectados, puedes intentar aplicar fungicidas siempre
+y cuando la enfermedad no esté muy avanzada, pero si hay más plantas alrededor lo más prudente es retirar la planta afectada, meterla en una bolsa cerrada y eliminarla, aplicando tratamiento preventivo a los cultivos cercanos.');
